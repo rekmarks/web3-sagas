@@ -1,0 +1,26 @@
+{
+  "name": "web3-saga",
+  "version": "0.0.0",
+  "description": "Redux Sagas for Web3 and Truffle",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rekmarks/web3-saga.git"
+  },
+  "keywords": [
+    "web3",
+    "truffle",
+    "ethereum",
+    "redux",
+    "saga"
+  ],
+  "author": "Erik Marks <rekmarks@protonmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rekmarks/web3-saga/issues"
+  },
+  "homepage": "https://github.com/rekmarks/web3-saga#readme"
+}
