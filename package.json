@@ -1,5 +1,5 @@
 {
-  "name": "web3-saga",
+  "name": "web3-sagas",
   "version": "0.0.0",
   "description": "Redux Sagas for Web3 and Truffle",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rekmarks/web3-saga.git"
+    "url": "git+https://github.com/rekmarks/web3-sagas.git"
   },
   "keywords": [
     "web3",
@@ -20,7 +20,18 @@
   "author": "Erik Marks <rekmarks@protonmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/rekmarks/web3-saga/issues"
+    "url": "https://github.com/rekmarks/web3-sagas/issues"
   },
-  "homepage": "https://github.com/rekmarks/web3-saga#readme"
+  "homepage": "https://github.com/rekmarks/web3-sagas#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "eslint": "^5.12.1"
+  },
+  "dependencies": {
+    "chain-end": "^0.6.2",
+    "redux": "^4.0.1",
+    "redux-saga": "^1.0.0",
+    "uuid": "^3.3.2"
+  }
 }
