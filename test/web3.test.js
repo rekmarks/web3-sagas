@@ -1,0 +1,107 @@
+
+/* eslint-env jest */
+
+import { call, put, take } from 'redux-saga/effects'
+import { cloneableGenerator } from '@redux-saga/testing-utils'
+
+import { web3 as ACTIONS } from '../src/actions'
+import reducer, { initialState, _test } from '../src/reducers/web3'
+
+describe('web3 reducer', () => {
+
+  let state
+
+  beforeEach(() => {
+    state = { ...initialState }
+  })
+
+  it(ACTIONS.GET_WEB3, () => {
+    state = { foo: 'bar' }
+    state = reducer(state, _test.actions.getWeb3Action())
+    expect(state).toEqual(initialState)
+  })
+
+  it(ACTIONS.CLEAR_ERRORS, () => {
+    state.errors = [ new Error('blaha') ]
+    state = reducer(state, _test.actions.getClearErrorsAction())
+    expect(state).toMatchObject({ errors: [] })
+  })
+
+  it(ACTIONS.GET_WEB3_FAILURE, () => {
+    const error = 'sune'
+    state = reducer(state, _test.actions.getWeb3FailureAction(error))
+    expect(state).toMatchObject({ errors: [error] })
+  })
+
+  it(ACTIONS.GET_WEB3_SUCCESS, () => {
+    const expected = {
+      provider: 'provider',
+      account: 'account',
+      networkId: 'networkId',
+    }
+    state = reducer(state, { type: ACTIONS.GET_WEB3_SUCCESS, ...expected })
+    expected.ready = true
+    expect(state).toMatchObject(expected)
+  })
+
+  it('Default', () => {
+    state = reducer(state, { type: 'KAPLAHHH', foo: 'bar' })
+    expect(state).toEqual(initialState)
+  })
+})
+
+describe('web3 sagas', () => {
+
+  let state
+
+  beforeEach(() => {
+    state = { ...initialState }
+    window.ethereum = {
+      isMetaMask: true,
+      selectedAddress: 'bar',
+      networkVersion: 9000,
+    }
+  })
+
+  const gen = cloneableGenerator(_test.sagas.getWeb3Saga)()
+
+  it('Fails if window.ethereum not found', () => {
+    const clone = gen.clone()
+    window.ethereum = false
+    expect(clone.next().value).toEqual(
+      put(_test.actions.getWeb3FailureAction(
+        new Error('window.ethereum not found.')
+      ))
+    )
+  })
+
+  it('Fails if account address invalid', () => {
+    const clone = gen.clone()
+    window.ethereum.selectedAddress = null
+    expect(clone.next().value).toEqual(
+      put(_test.actions.getWeb3FailureAction(
+        new Error('Missing or invalid account or network id.')
+      ))
+    )
+  })
+
+  it('Fails if network id invalid', () => {
+    const clone = gen.clone()
+    window.ethereum.networkVersion = null
+    expect(clone.next().value).toEqual(
+      put(_test.actions.getWeb3FailureAction(
+        new Error('Missing or invalid account or network id.')
+      ))
+    )
+  })
+
+  it('Succeeds if all is well', () => {
+    expect(gen.next().value).toEqual(
+      put(_test.actions.getWeb3SuccessAction(
+        window.ethereum,
+        window.ethereum.selectedAddress,
+        window.ethereum.networkVersion
+      ))
+    )
+  })
+})

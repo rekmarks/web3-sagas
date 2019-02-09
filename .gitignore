@@ -1,3 +1,7 @@
+# compiled
+build
+.vscode
+
 # Logs
 logs
 *.log

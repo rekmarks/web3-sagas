@@ -2,9 +2,33 @@
   "name": "web3-sagas",
   "version": "0.0.0",
   "description": "Redux Sagas for Web3 and Truffle",
+  "author": "Erik Marks <rekmarks@protonmail.com>",
+  "homepage": "https://github.com/rekmarks/web3-sagas#readme",
+  "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "jest",
+    "build": "npx babel src -d build"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.2.5",
+    "chain-end": "^0.6.3",
+    "redux": "^4.0.1",
+    "redux-saga": "^1.0.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "@redux-saga/testing-utils": "^1.0.1",
+    "babel-jest": "^24.1.0",
+    "eslint": "^5.13.0",
+    "eslint-plugin-jest": "^22.2.2",
+    "eslint-plugin-json": "^1.3.2",
+    "eslint-plugin-react": "^7.12.4",
+    "jest": "^24.1.0",
+    "redux-saga-test-plan": "^3.7.0"
   },
   "repository": {
     "type": "git",
@@ -15,23 +39,10 @@
     "truffle",
     "ethereum",
     "redux",
-    "saga"
+    "redux-saga",
+    "smart contracts"
   ],
-  "author": "Erik Marks <rekmarks@protonmail.com>",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/rekmarks/web3-sagas/issues"
-  },
-  "homepage": "https://github.com/rekmarks/web3-sagas#readme",
-  "devDependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.2.2",
-    "eslint": "^5.12.1"
-  },
-  "dependencies": {
-    "chain-end": "^0.6.2",
-    "redux": "^4.0.1",
-    "redux-saga": "^1.0.0",
-    "uuid": "^3.3.2"
   }
 }

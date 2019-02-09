@@ -22,15 +22,13 @@
   "env": {
     "es6": true,
     "node": true,
-    "browser": true,
-    "mocha" : true
+    "browser": true
   },
 
   "plugins": [
-    "mocha",
-    "chai",
     "react",
-    "json"
+    "json",
+    "jest"
   ],
 
   "globals": {

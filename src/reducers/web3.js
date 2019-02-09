@@ -19,11 +19,25 @@ const sagas = {
   watchGetWeb3,
 }
 
+const _test = {
+  actions: {
+    getWeb3Action,
+    getWeb3FailureAction,
+    getWeb3SuccessAction,
+    getClearErrorsAction,
+  },
+  sagas: {
+    getWeb3Saga,
+    watchGetWeb3,
+  },
+}
+
 export {
   getWeb3Action as getWeb3,
   getClearErrorsAction as clearErrors,
   initialState,
   sagas,
+  _test,
 }
 
 export default function reducer (state = initialState, action) {
@@ -61,7 +75,9 @@ export default function reducer (state = initialState, action) {
   }
 }
 
-/* Synchronous action creators */
+/**
+ * Synchronous action creators
+ */
 
 function getWeb3Action () {
   return {
@@ -80,7 +96,7 @@ function getWeb3SuccessAction (provider, account, networkId) {
 
 function getWeb3FailureAction (error) {
   return {
-    type: ACTIONS.GET_WEB3_SUCCESS,
+    type: ACTIONS.GET_WEB3_FAILURE,
     error: error,
   }
 }
@@ -98,17 +114,17 @@ function getClearErrorsAction () {
 /**
  * Saga export for use in root Saga.
  */
-function* watchGetWeb3() {
+function * watchGetWeb3 () {
   yield takeLatest(ACTIONS.GET_WEB3, getWeb3Saga)
 }
 
 /**
  * Saga. Gets the injected web3 object. Assumes window.ethereum.enable()
  * already called. Does not support legacy dapp browsers.
- * 
+ *
  * TODO: Add support for other EIP1102-compliant dapp browsers.
  */
-function* getWeb3Saga () {
+function * getWeb3Saga () {
 
   let provider, account, networkId
 
@@ -127,13 +143,13 @@ function* getWeb3Saga () {
     }
   } else {
     console.warn('Please install MetaMask.')
-    yield put(getWeb3FailureAction(new Error('window.ethereum not found')))
+    yield put(getWeb3FailureAction(new Error('window.ethereum not found.')))
   }
 
   // fail if account invalid
-  if (!account || account.length < 1) {
+  if (!account || account.length < 1 || !networkId) {
     yield put(getWeb3FailureAction(new Error(
-      'missing or invalid account', account)))
+      'Missing or invalid account or network id.', account)))
   } else {
     yield put(getWeb3SuccessAction(provider, account, networkId))
   }
