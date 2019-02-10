@@ -1,7 +1,7 @@
 
 // package imports
 
-import { put, takeEvery, call, select } from 'redux-saga/effects'
+import { put, takeLeading, call, select } from 'redux-saga/effects'
 
 import uuidv4 from 'uuid/v4'
 import uuidv5 from 'uuid/v5'
@@ -43,7 +43,7 @@ const initialState = {
   errors: [],
 
   // prevents further web3 calls if false
-  ready: true,
+  isDeploying: false,
 
   // deployed contract instances
   instances: {
@@ -79,11 +79,14 @@ const _test = {
     getBeginDeploymentAction,
     getDeploymentFailureAction,
     getDeploymentSuccessAction,
-    getEndDeploymentAction,
   },
   sagas: {
     deploySaga,
     watchDeploySaga,
+  },
+  fn: {
+    deployContract,
+    prepareForDeployment,
   },
 }
 
@@ -102,13 +105,13 @@ export default function reducer (state = initialState, action) {
     case ACTIONS.BEGIN_DEPLOYMENT:
       return {
         ...state,
-        ready: false,
+        isDeploying: true,
       }
 
     case ACTIONS.END_DEPLOYMENT:
       return {
         ...state,
-        ready: true,
+        isDeploying: false,
       }
 
     case ACTIONS.DEPLOYMENT_SUCCESS:
@@ -122,16 +125,17 @@ export default function reducer (state = initialState, action) {
           [action.id]: {
             ...action.data,
             id: action.id,
-            dappTemplateIds: action.data.dappTemplateIds || [],
+            // dappTemplateIds: action.data.dappTemplateIds || [],
           },
         },
+        isDeploying: false,
       }
 
     case ACTIONS.DEPLOYMENT_FAILURE:
       return {
         ...state,
         errors: state.errors.concat(action.error),
-        ready: true,
+        isDeploying: false,
       }
 
     case ACTIONS.CLEAR_ERRORS:
@@ -162,12 +166,6 @@ function getBeginDeploymentAction (contractId, constructorParams) {
   }
 }
 
-function getEndDeploymentAction () {
-  return {
-    type: ACTIONS.END_DEPLOYMENT,
-  }
-}
-
 function getDeploymentSuccessAction (id, data) {
   return {
     type: ACTIONS.DEPLOYMENT_SUCCESS,
@@ -194,7 +192,7 @@ function getClearErrorsAction () {
  */
 
 function * watchDeploySaga () {
-  yield takeEvery(ACTIONS.BEGIN_DEPLOYMENT, deploySaga)
+  yield takeLeading(ACTIONS.BEGIN_DEPLOYMENT, deploySaga)
 }
 
 /**
@@ -209,7 +207,7 @@ function * deploySaga (action) {
   const contracts = yield select(selectors.contracts)
 
   let ready = false
-  try { ready = prepareForDeployment(contracts, web3) } catch (error) {
+  try { ready = prepareForDeployment(web3) } catch (error) {
     yield put(getDeploymentFailureAction(error))
   }
 
@@ -227,7 +225,6 @@ function * deploySaga (action) {
       yield put(getDeploymentFailureAction(error))
     }
   }
-  yield put(getEndDeploymentAction())
 }
 
 /**
@@ -238,23 +235,19 @@ function * deploySaga (action) {
  * Validates pre-deployment state. Throws error if validation fails.
  * Returns true otherwise.
  *
- * @param {object} contracts contracts substate
  * @param {object} web3 redux web3 substate
  * @return {bool} true if validation successful, else throws
  */
-function prepareForDeployment (contracts, web3) {
+function prepareForDeployment (web3) {
 
-  if (!contracts.ready) {
-    throw new Error('contracts not ready')
-  }
   if (!web3.ready) {
-    throw new Error('web3 not ready')
+    throw new Error('Reducer "web3" not ready.')
   }
   if (!web3.provider) {
-    throw new Error('missing web3 provider')
+    throw new Error('Missing web3 provider.')
   }
   if (!web3.account) {
-    throw new Error('missing web3 account')
+    throw new Error('Missing web3 account.')
   }
   return true
 }

@@ -1,1 +1,4 @@
-.eslintrc*
+.*
+jest*
+test
+src

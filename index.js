@@ -1,6 +1,4 @@
 
-// exports.default = require('./build/saga')
-
-import saga from './src/main'
-
-export default saga
+exports.default = require('./build/main')
+exports.web3 = require('./build/main').web3
+exports.contracts = require('./build/main').contracts

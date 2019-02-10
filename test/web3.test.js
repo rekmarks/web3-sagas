@@ -1,7 +1,7 @@
 
 /* eslint-env jest */
 
-import { call, put, take } from 'redux-saga/effects'
+import { put } from 'redux-saga/effects'
 import { cloneableGenerator } from '@redux-saga/testing-utils'
 
 import { web3 as ACTIONS } from '../src/actions'
@@ -15,25 +15,30 @@ describe('web3 reducer', () => {
     state = { ...initialState }
   })
 
-  it(ACTIONS.GET_WEB3, () => {
+  test('Default', () => {
+    state = reducer(state, { type: 'KAPLAHHH', foo: 'bar' })
+    expect(state).toEqual(initialState)
+  })
+
+  test(ACTIONS.GET_WEB3, () => {
     state = { foo: 'bar' }
     state = reducer(state, _test.actions.getWeb3Action())
     expect(state).toEqual(initialState)
   })
 
-  it(ACTIONS.CLEAR_ERRORS, () => {
+  test(ACTIONS.CLEAR_ERRORS, () => {
     state.errors = [ new Error('blaha') ]
     state = reducer(state, _test.actions.getClearErrorsAction())
     expect(state).toMatchObject({ errors: [] })
   })
 
-  it(ACTIONS.GET_WEB3_FAILURE, () => {
+  test(ACTIONS.GET_WEB3_FAILURE, () => {
     const error = 'sune'
     state = reducer(state, _test.actions.getWeb3FailureAction(error))
     expect(state).toMatchObject({ errors: [error] })
   })
 
-  it(ACTIONS.GET_WEB3_SUCCESS, () => {
+  test(ACTIONS.GET_WEB3_SUCCESS, () => {
     const expected = {
       provider: 'provider',
       account: 'account',
@@ -43,19 +48,11 @@ describe('web3 reducer', () => {
     expected.ready = true
     expect(state).toMatchObject(expected)
   })
-
-  it('Default', () => {
-    state = reducer(state, { type: 'KAPLAHHH', foo: 'bar' })
-    expect(state).toEqual(initialState)
-  })
 })
 
 describe('web3 sagas', () => {
 
-  let state
-
   beforeEach(() => {
-    state = { ...initialState }
     window.ethereum = {
       isMetaMask: true,
       selectedAddress: 'bar',
@@ -65,7 +62,7 @@ describe('web3 sagas', () => {
 
   const gen = cloneableGenerator(_test.sagas.getWeb3Saga)()
 
-  it('Fails if window.ethereum not found', () => {
+  test('Fails if window.ethereum not found', () => {
     const clone = gen.clone()
     window.ethereum = false
     expect(clone.next().value).toEqual(
@@ -75,7 +72,7 @@ describe('web3 sagas', () => {
     )
   })
 
-  it('Fails if account address invalid', () => {
+  test('Fails if account address invalid', () => {
     const clone = gen.clone()
     window.ethereum.selectedAddress = null
     expect(clone.next().value).toEqual(
@@ -85,7 +82,7 @@ describe('web3 sagas', () => {
     )
   })
 
-  it('Fails if network id invalid', () => {
+  test('Fails if network id invalid', () => {
     const clone = gen.clone()
     window.ethereum.networkVersion = null
     expect(clone.next().value).toEqual(
@@ -95,7 +92,7 @@ describe('web3 sagas', () => {
     )
   })
 
-  it('Succeeds if all is well', () => {
+  test('Succeeds if all is well', () => {
     expect(gen.next().value).toEqual(
       put(_test.actions.getWeb3SuccessAction(
         window.ethereum,
