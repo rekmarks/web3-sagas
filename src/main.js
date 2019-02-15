@@ -2,7 +2,6 @@
 import '@babel/polyfill'
 
 import { combineReducers } from 'redux'
-import { all } from 'redux-saga/effects'
 
 import web3Reducer, {
   sagas as web3Sagas,
@@ -24,15 +23,13 @@ const reducer = combineReducers({
   web3Reducer,
 })
 
-function * saga () {
-  yield all([
-    web3Sagas.watchGetWeb3(),
-    contractsSagas.watchDeploySaga(),
-  ])
-}
+const sagas = [
+  ...web3Sagas,
+  ...contractsSagas,
+]
 
 export default {
-  saga,
+  sagas,
   reducer,
   initialState,
 }

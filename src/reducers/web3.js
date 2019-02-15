@@ -15,9 +15,9 @@ const initialState = {
   errors: [], // storage for web3 errors
 }
 
-const sagas = {
-  watchGetWeb3,
-}
+const sagas = [
+  takeLatest(ACTIONS.GET_WEB3, getWeb3Saga),
+]
 
 const _test = {
   actions: {

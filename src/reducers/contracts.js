@@ -69,9 +69,9 @@ const initialState = {
   // deploymentQueue: null,
 }
 
-const sagas = {
-  watchDeploySaga,
-}
+const sagas = [
+ takeLeading(ACTIONS.BEGIN_DEPLOYMENT, deploySaga),
+]
 
 const _test = {
   actions: {
