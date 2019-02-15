@@ -36,3 +36,4 @@ const web3 = {
   CLEAR_ERRORS: 'WEB3:CLEAR_ERRORS'
 };
 exports.web3 = web3;
+//# sourceMappingURL=actions.js.map

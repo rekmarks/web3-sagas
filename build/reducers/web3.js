@@ -169,3 +169,4 @@ function* getWeb3Saga() {
     yield (0, _effects.put)(getWeb3SuccessAction(provider, account, networkId));
   }
 }
+//# sourceMappingURL=web3.js.map

@@ -27,3 +27,4 @@ const reducers = {
 exports.reducers = reducers;
 const sagas = [..._web.sagas, ..._contracts.sagas];
 exports.sagas = sagas;
+//# sourceMappingURL=main.js.map
