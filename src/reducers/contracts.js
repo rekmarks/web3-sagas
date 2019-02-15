@@ -275,6 +275,9 @@ async function deployContract (
     throw new Error('No contract with id "' + contractId + '" found.')
   }
 
+  // TODO: actually expect only arrays for this argument
+  // and move this conversion higher up the call chain
+  // (do form an object as below in the React component)
   let arrayParams = []
   if (!Array.isArray(constructorParams)) {
     // convert object of params with data to array of param values
@@ -298,8 +301,6 @@ async function deployContract (
     web3.provider,
     web3.account
   )
-
-  if (!instance) throw new Error('Deployment returned no instance.')
 
   // success, return deployment data
   return {

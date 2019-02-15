@@ -36,20 +36,3 @@ export default {
   reducer,
   initialState,
 }
-
-const web3 = {
-  sagas: web3Sagas,
-  reducer: web3Reducer,
-  initialState: web3State,
-}
-
-const contracts = {
-  sagas: contractsSagas,
-  reducer: contractsReducer,
-  initialState: contractsState,
-}
-
-export {
-  web3,
-  contracts,
-}
