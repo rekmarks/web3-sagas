@@ -16,10 +16,10 @@ const initialState = {
   web3: {...web3State},
 }
 
-const reducers = [
+const reducers = {
   contractsReducer,
   web3Reducer,
-]
+}
 
 const sagas = [
   ...web3Sagas,
