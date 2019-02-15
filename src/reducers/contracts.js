@@ -154,6 +154,7 @@ export default function reducer (state = initialState, action) {
  */
 
 /**
+ * Initializes contract deployment.
  * @param {string} contractId the uuid of the contract to deploy
  * @param {array} constructorParams the parameters, in the order they must be
  * passed to the constructor, or an object
@@ -169,15 +170,15 @@ function getBeginDeploymentAction (contractId, constructorParams) {
 function getDeploymentSuccessAction (id, data) {
   return {
     type: ACTIONS.DEPLOYMENT_SUCCESS,
-    id: id,
-    data: data,
+    id,
+    data,
   }
 }
 
 function getDeploymentFailureAction (error) {
   return {
     type: ACTIONS.DEPLOYMENT_FAILURE,
-    error: error,
+    error,
   }
 }
 
@@ -191,6 +192,9 @@ function getClearErrorsAction () {
  * Sagas
  */
 
+/**
+ * Watcher for deploySaga.
+ */
 function * watchDeploySaga () {
   yield takeLeading(ACTIONS.BEGIN_DEPLOYMENT, deploySaga)
 }
@@ -198,7 +202,7 @@ function * watchDeploySaga () {
 /**
  * Attempts to deploy the given contract by calling its constructor with the
  * given parameters. Handles success and failure.
- *
+ * @param {object} action the action initializing the deployment procedure
  */
 function * deploySaga (action) {
 

@@ -79,28 +79,44 @@ export default function reducer (state = initialState, action) {
  * Synchronous action creators
  */
 
+/**
+ * Gets web3, adds it to state.
+ */
 function getWeb3Action () {
   return {
     type: ACTIONS.GET_WEB3,
   }
 }
 
+/**
+ * On getWeb3 success, adds provider, account, and networkId to state.
+ * @param {object} provider
+ * @param {string} account
+ * @param {string} networkId
+ */
 function getWeb3SuccessAction (provider, account, networkId) {
   return {
     type: ACTIONS.GET_WEB3_SUCCESS,
-    provider: provider,
-    account: account,
-    networkId: networkId,
+    provider,
+    account,
+    networkId,
   }
 }
 
+/**
+ * On getWeb3 failure, adds error to state.
+ * @param {error} error
+ */
 function getWeb3FailureAction (error) {
   return {
     type: ACTIONS.GET_WEB3_FAILURE,
-    error: error,
+    error,
   }
 }
 
+/**
+ * Clears errors from state.
+ */
 function getClearErrorsAction () {
   return {
     type: ACTIONS.CLEAR_ERRORS,
@@ -112,7 +128,7 @@ function getClearErrorsAction () {
  */
 
 /**
- * Saga export for use in root Saga.
+ * Watcher for getWeb3Saga.
  */
 function * watchGetWeb3 () {
   yield takeLatest(ACTIONS.GET_WEB3, getWeb3Saga)
