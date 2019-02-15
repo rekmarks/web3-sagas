@@ -1,2 +1,2 @@
 
-exports.default = require('./build/main')
+exports = require('./build/main')

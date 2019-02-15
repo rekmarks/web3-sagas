@@ -1,8 +1,6 @@
 
 import '@babel/polyfill'
 
-import { combineReducers } from 'redux'
-
 import web3Reducer, {
   sagas as web3Sagas,
   initialState as web3State,
@@ -18,18 +16,18 @@ const initialState = {
   web3: {...web3State},
 }
 
-const reducer = combineReducers({
+const reducers = [
   contractsReducer,
   web3Reducer,
-})
+]
 
 const sagas = [
   ...web3Sagas,
   ...contractsSagas,
 ]
 
-export default {
+export {
   sagas,
-  reducer,
+  reducers,
   initialState,
 }

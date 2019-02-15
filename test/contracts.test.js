@@ -7,8 +7,8 @@ import uuidv4 from 'uuid/v4'
 
 import { contracts as ACTIONS } from '../src/actions'
 import selectors from '../src/selectors'
-import reducer, { initialState, _test } from '../src/reducers/contracts'
-import root from '../src/main'
+import contractsReducer, { initialState, _test } from '../src/reducers/contracts'
+import { initialState as web3InitialState} from '../src/reducers/web3'
 
 // TODO: finish testing all saga branches
 
@@ -21,24 +21,24 @@ describe('contracts reducer', () => {
   })
 
   test('Default', () => {
-    state = reducer(state, { type: 'KAPLAHHH', foo: 'bar' })
+    state = contractsReducer(state, { type: 'KAPLAHHH', foo: 'bar' })
     expect(state).toEqual(initialState)
   })
 
   test(ACTIONS.CLEAR_ERRORS, () => {
     state.errors = [ new Error('blaha') ]
-    state = reducer(state, _test.actions.getClearErrorsAction())
+    state = contractsReducer(state, _test.actions.getClearErrorsAction())
     expect(state).toMatchObject({ errors: [] })
   })
 
   test(ACTIONS.BEGIN_DEPLOYMENT, () => {
     state.isDeploying = false
-    state = reducer(state, _test.actions.getBeginDeploymentAction())
+    state = contractsReducer(state, _test.actions.getBeginDeploymentAction())
     expect(state).toEqual({ ...initialState, isDeploying: true })
   })
 
   test(ACTIONS.DEPLOYMENT_FAILURE, () => {
-    state = reducer(state, _test.actions.getDeploymentFailureAction(
+    state = contractsReducer(state, _test.actions.getDeploymentFailureAction(
       new Error('foo')
     ))
     expect(state).toEqual({
@@ -50,7 +50,7 @@ describe('contracts reducer', () => {
     const id1 = uuidv4()
     const id2 = uuidv4()
     state.instances = { [id1]: { id: id1, contract: 'foo' } }
-    state = reducer(state, _test.actions.getDeploymentSuccessAction(
+    state = contractsReducer(state, _test.actions.getDeploymentSuccessAction(
       id2, { contract: 'bar' }
     ))
     expect(state).toEqual({
@@ -72,8 +72,8 @@ describe('contracts sagas', () => {
 
   const cloneState = () => {
     return {
-      contracts: { ...root.initialState.contracts },
-      web3: { ...root.initialState.web3 },
+      contracts: { ...initialState },
+      web3: { ...web3InitialState },
     }
   }
 
