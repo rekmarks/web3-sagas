@@ -1,2 +1,0 @@
-
-exports = require('./build/main')

@@ -5,7 +5,7 @@
   "author": "Erik Marks <rekmarks@protonmail.com>",
   "homepage": "https://github.com/rekmarks/web3-sagas#readme",
   "license": "MIT",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
     "test": "jest",
     "build": "npx babel src -d build --source-maps"
