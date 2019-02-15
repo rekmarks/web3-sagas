@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.initialState = exports.reducers = exports.sagas = void 0;
+exports.sagas = exports.reducers = exports.initialState = void 0;
 
 require("@babel/polyfill");
 

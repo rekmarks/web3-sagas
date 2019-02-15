@@ -11,23 +11,17 @@ import contractsReducer, {
   initialState as contractsState,
 } from './reducers/contracts'
 
-const initialState = {
+export const initialState = {
   contracts: {...contractsState},
   web3: {...web3State},
 }
 
-const reducers = {
+export const reducers = {
   contractsReducer,
   web3Reducer,
 }
 
-const sagas = [
+export const sagas = [
   ...web3Sagas,
   ...contractsSagas,
 ]
-
-export {
-  sagas,
-  reducers,
-  initialState,
-}
