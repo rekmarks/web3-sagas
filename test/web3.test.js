@@ -5,7 +5,7 @@ import { put } from 'redux-saga/effects'
 import { cloneableGenerator } from '@redux-saga/testing-utils'
 
 import { web3 as ACTIONS } from '../src/actions'
-import reducer, { initialState, _test } from '../src/reducers/web3'
+import { reducer, initialState, _test } from '../src/reducers/web3'
 
 describe('web3 reducer', () => {
 
