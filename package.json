@@ -9,9 +9,8 @@
   "scripts": {
     "test": "npm run build && jest",
     "clean": "rm -rf dist/*",
-    "babelify": "npx babel src -d dist --source-maps",
-    "uglify": "uglifyjs dist/*.js --compress --mangle --output dist/index.min.js",
-    "build": "npm run clean && npm run babelify && npm run uglify"
+    "transpile": "npx babel src -d dist --source-maps",
+    "build": "npm run clean && npm run transpile"
   },
   "prepublish": "npm run test",
   "dependencies": {
