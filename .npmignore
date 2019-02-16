@@ -1,4 +1,7 @@
 .*
+!.babelrc
 jest*
 test
 src
+dist/*
+!dist/index.min.js

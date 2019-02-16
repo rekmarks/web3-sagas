@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.web3 = exports.contracts = void 0;
-const contracts = {
+var contracts = {
   BEGIN_DEPLOYMENT: 'CONTRACTS:BEGIN_DEPLOYMENT',
   DEPLOYMENT_SUCCESS: 'CONTRACTS:DEPLOYMENT_SUCCESS',
   DEPLOYMENT_FAILURE: 'CONTRACTS:DEPLOYMENT_FAILURE',
@@ -29,7 +29,7 @@ const contracts = {
 
 };
 exports.contracts = contracts;
-const web3 = {
+var web3 = {
   GET_WEB3: 'WEB3:GET_WEB3',
   GET_WEB3_SUCCESS: 'WEB3:GET_WEB3_SUCCESS',
   GET_WEB3_FAILURE: 'WEB3:GET_WEB3_FAILURE',

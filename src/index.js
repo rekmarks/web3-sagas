@@ -1,5 +1,5 @@
 
-import '@babel/polyfill'
+// import '@babel/polyfill'
 
 import web3Reducer, {
   sagas as web3Sagas,

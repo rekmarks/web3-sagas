@@ -5,11 +5,15 @@
   "author": "Erik Marks <rekmarks@protonmail.com>",
   "homepage": "https://github.com/rekmarks/web3-sagas#readme",
   "license": "MIT",
-  "main": "build/index.js",
+  "main": "dist/index.min.js",
   "scripts": {
-    "test": "jest",
-    "build": "npx babel src -d build --source-maps"
+    "test": "npm run build && jest",
+    "clean": "rm -rf dist/*",
+    "babelify": "npx babel src -d dist --source-maps",
+    "uglify": "uglifyjs dist/*.js --compress --mangle --output dist/index.min.js",
+    "build": "npm run clean && npm run babelify && npm run uglify"
   },
+  "prepublish": "npm run test",
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
     "chain-end": "^0.7.0",
@@ -29,7 +33,8 @@
     "eslint-plugin-json": "^1.3.2",
     "eslint-plugin-react": "^7.12.4",
     "jest": "^24.1.0",
-    "redux-saga-test-plan": "^4.0.0-beta.2"
+    "redux-saga-test-plan": "^4.0.0-beta.2",
+    "uglify-js": "^3.4.9"
   },
   "repository": {
     "type": "git",
