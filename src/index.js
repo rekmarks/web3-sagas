@@ -17,8 +17,8 @@ export const initialState = {
 }
 
 export const reducers = {
-  contractsReducer,
-  web3Reducer,
+  contracts: contractsReducer,
+  web3: web3Reducer,
 }
 
 export const sagas = [
