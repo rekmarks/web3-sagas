@@ -1,5 +1,7 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -8,19 +10,13 @@ exports.clearErrors = getClearErrorsAction;
 exports.default = reducer;
 exports._test = exports.sagas = exports.initialState = void 0;
 
-require("core-js/modules/es6.array.sort");
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
-require("core-js/modules/es6.promise");
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
-require("core-js/modules/es6.object.keys");
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
-require("regenerator-runtime/runtime");
-
-require("core-js/modules/web.dom.iterable");
-
-require("core-js/modules/es6.array.iterator");
-
-require("core-js/modules/es7.object.values");
+var _objectSpread3 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
 
 var _effects = require("redux-saga/effects");
 
@@ -36,22 +32,12 @@ var _selectors = _interopRequireDefault(require("../selectors"));
 
 var _utils = require("../utils");
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 var _marked =
 /*#__PURE__*/
-regeneratorRuntime.mark(watchDeploySaga),
+_regenerator.default.mark(watchDeploySaga),
     _marked2 =
 /*#__PURE__*/
-regeneratorRuntime.mark(deploySaga);
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+_regenerator.default.mark(deploySaga);
 
 // import { getDisplayAddress } from '../utils' // eth address truncation
 var initialState = {
@@ -116,18 +102,18 @@ function reducer() {
 
   switch (action.type) {
     case _actions.contracts.BEGIN_DEPLOYMENT:
-      return _objectSpread({}, state, {
+      return (0, _objectSpread3.default)({}, state, {
         isDeploying: true
       });
 
     case _actions.contracts.END_DEPLOYMENT:
-      return _objectSpread({}, state, {
+      return (0, _objectSpread3.default)({}, state, {
         isDeploying: false
       });
 
     case _actions.contracts.DEPLOYMENT_SUCCESS:
-      return _objectSpread({}, state, {
-        instances: _objectSpread({}, state.instances, _defineProperty({}, action.id, _objectSpread({}, action.data, {
+      return (0, _objectSpread3.default)({}, state, {
+        instances: (0, _objectSpread3.default)({}, state.instances, (0, _defineProperty2.default)({}, action.id, (0, _objectSpread3.default)({}, action.data, {
           id: action.id // dappTemplateIds: action.data.dappTemplateIds || [],
 
         }))),
@@ -135,13 +121,13 @@ function reducer() {
       });
 
     case _actions.contracts.DEPLOYMENT_FAILURE:
-      return _objectSpread({}, state, {
+      return (0, _objectSpread3.default)({}, state, {
         errors: state.errors.concat(action.error),
         isDeploying: false
       });
 
     case _actions.contracts.CLEAR_ERRORS:
-      return _objectSpread({}, state, {
+      return (0, _objectSpread3.default)({}, state, {
         errors: []
       });
 
@@ -199,7 +185,7 @@ function getClearErrorsAction() {
 
 
 function watchDeploySaga() {
-  return regeneratorRuntime.wrap(function watchDeploySaga$(_context) {
+  return _regenerator.default.wrap(function watchDeploySaga$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
@@ -222,7 +208,7 @@ function watchDeploySaga() {
 
 function deploySaga(action) {
   var web3, contracts, ready, result;
-  return regeneratorRuntime.wrap(function deploySaga$(_context2) {
+  return _regenerator.default.wrap(function deploySaga$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
@@ -326,11 +312,11 @@ function deployContract(_x, _x2, _x3, _x4) {
 }
 
 function _deployContract() {
-  _deployContract = _asyncToGenerator(
+  _deployContract = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee(web3, contractTypes, contractId, constructorParams) {
+  _regenerator.default.mark(function _callee(web3, contractTypes, contractId, constructorParams) {
     var arrayParams, artifact, instance;
-    return regeneratorRuntime.wrap(function _callee$(_context3) {
+    return _regenerator.default.wrap(function _callee$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:

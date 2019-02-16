@@ -1,5 +1,7 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -8,13 +10,9 @@ exports.clearErrors = getClearErrorsAction;
 exports.default = reducer;
 exports._test = exports.sagas = exports.initialState = void 0;
 
-require("core-js/modules/web.dom.iterable");
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
-require("core-js/modules/es6.array.iterator");
-
-require("core-js/modules/es6.object.keys");
-
-require("regenerator-runtime/runtime");
+var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
 
 var _effects = require("redux-saga/effects");
 
@@ -22,14 +20,10 @@ var _actions = require("../actions");
 
 var _marked =
 /*#__PURE__*/
-regeneratorRuntime.mark(watchGetWeb3),
+_regenerator.default.mark(watchGetWeb3),
     _marked2 =
 /*#__PURE__*/
-regeneratorRuntime.mark(getWeb3Saga);
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+_regenerator.default.mark(getWeb3Saga);
 
 var initialState = {
   account: null,
@@ -66,10 +60,10 @@ function reducer() {
 
   switch (action.type) {
     case _actions.web3.GET_WEB3:
-      return _objectSpread({}, initialState);
+      return (0, _objectSpread2.default)({}, initialState);
 
     case _actions.web3.GET_WEB3_SUCCESS:
-      return _objectSpread({}, state, {
+      return (0, _objectSpread2.default)({}, state, {
         ready: true,
         provider: action.provider,
         account: action.account,
@@ -77,12 +71,12 @@ function reducer() {
       });
 
     case _actions.web3.GET_WEB3_FAILURE:
-      return _objectSpread({}, state, {
+      return (0, _objectSpread2.default)({}, state, {
         errors: state.errors.concat(action.error)
       });
 
     case _actions.web3.CLEAR_ERRORS:
-      return _objectSpread({}, state, {
+      return (0, _objectSpread2.default)({}, state, {
         errors: []
       });
 
@@ -152,7 +146,7 @@ function getClearErrorsAction() {
 
 
 function watchGetWeb3() {
-  return regeneratorRuntime.wrap(function watchGetWeb3$(_context) {
+  return _regenerator.default.wrap(function watchGetWeb3$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
@@ -176,7 +170,7 @@ function watchGetWeb3() {
 
 function getWeb3Saga() {
   var provider, account, networkId;
-  return regeneratorRuntime.wrap(function getWeb3Saga$(_context2) {
+  return _regenerator.default.wrap(function getWeb3Saga$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
