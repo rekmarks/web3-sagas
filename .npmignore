@@ -1,4 +1,4 @@
 .*
-!.babelrc
 jest*
 test
+src
