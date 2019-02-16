@@ -1,13 +1,15 @@
 
-import web3, {
-  sagas as web3Sagas,
-  initialState as web3State,
-} from './reducers/web3'
-
-import contracts, {
-  sagas as contractsSagas,
+import {
   initialState as contractsState,
+  reducer as contracts,
+  sagas as contractsSagas,
 } from './reducers/contracts'
+
+import {
+  initialState as web3State,
+  reducer as web3,
+  sagas as web3Sagas,
+} from './reducers/web3'
 
 export const initialState = {
   contracts: {...contractsState},
