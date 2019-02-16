@@ -12,7 +12,7 @@
     "transpile": "npx babel src -d dist --source-maps",
     "build": "npm run clean && npm run transpile"
   },
-  "prepublish": "npm run test",
+  "prepare": "npm run test",
   "dependencies": {
     "@babel/runtime": "^7.3.1",
     "chain-end": "^0.7.0",
