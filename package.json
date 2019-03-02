@@ -5,7 +5,7 @@
   "author": "Erik Marks <rekmarks@protonmail.com>",
   "homepage": "https://github.com/rekmarks/web3-sagas#readme",
   "license": "MIT",
-  "main": "dist/index.js",
+  "main": "index.js",
   "scripts": {
     "test": "npm run build && jest",
     "clean": "rm -rf dist/*",

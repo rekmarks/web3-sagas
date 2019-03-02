@@ -3,7 +3,7 @@
 
 import uuidv5 from 'uuid/v5'
 
-import { sagas, reducers, initialState } from '../dist/index.js'
+import { sagas, reducers, initialState } from '../index.js'
 import { NAMESPACE } from '../src/utils'
 import { contracts } from 'chain-end'
 
