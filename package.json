@@ -1,6 +1,6 @@
 {
   "name": "web3-sagas",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "Redux Sagas for Web3 and Truffle",
   "author": "Erik Marks <rekmarks@protonmail.com>",
   "homepage": "https://github.com/rekmarks/web3-sagas#readme",
