@@ -19,7 +19,7 @@ import { contracts as ACTIONS } from '../actions'
 
 import selectors from '../selectors'
 
-// contract type uuids are created using the contract bytecode (see call below)
+// contract type uuids are created using the contract bytecode
 // think of the resulting uuid as a hash of the contract artifact to help
 // prevent the addition of duplicate contracts
 // e.g.     const id = uuidv5(c.bytecode, NAMESPACE)
@@ -91,10 +91,12 @@ const _test = {
 }
 
 export {
+  // actions
   getBeginDeploymentAction as deployContract,
   getClearErrorsAction as clearErrors,
   getAddContractTypeAction as addContractType,
   getRemoveContractTypeAction as removeContractType,
+  // general
   initialState,
   addInitialContractType,
   sagas,
@@ -102,7 +104,7 @@ export {
 }
 
 /**
- * External Helpers
+ * Initialization Helpers
  */
 
 /**
