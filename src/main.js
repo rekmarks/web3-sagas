@@ -7,7 +7,6 @@ import {
   clearErrors as clearContractsErrors,
   addContractType,
   removeContractType,
-  addInitialContractType,
 } from './reducers/contracts'
 
 import {
@@ -17,9 +16,6 @@ import {
   getWeb3,
   clearErrors as clearWeb3Errors,
 } from './reducers/web3'
-
-import { NAMESPACE, getDisplayAddress } from './utils'
-
 
 export const initialState = {
   contracts: { ...contractsState },
@@ -49,8 +45,5 @@ export const actions = {
   },
 }
 
-export const utils = {
-  NAMESPACE,
-  getDisplayAddress,
-  addInitialContractType,
-}
+export { NAMESPACE, getDisplayAddress } from './utils'
+export { addInitialContractType } from './reducers/contracts'
