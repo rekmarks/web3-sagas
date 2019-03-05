@@ -8,6 +8,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npm run build && jest",
+    "test-inspect": "node --inspect-brk ./node_modules/.bin/jest -i",
     "clean": "rm -rf dist/*",
     "transpile": "npx babel src -d dist --source-maps",
     "build": "npm run clean && npm run transpile",

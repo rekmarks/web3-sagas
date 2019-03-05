@@ -4,11 +4,13 @@
 import { expectSaga } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import uuidv4 from 'uuid/v4'
+import uuidv5 from 'uuid/v5'
 
 import { contracts as ACTIONS } from '../src/actions'
 import selectors from '../src/selectors'
 import { reducer, initialState, _test } from '../src/reducers/contracts'
 import { initialState as web3InitialState} from '../src/reducers/web3'
+import { NAMESPACE, addInitialContractType } from '../index'
 
 // TODO: finish testing all saga branches
 
@@ -23,6 +25,24 @@ describe('contracts reducer', () => {
   test('Default', () => {
     state = reducer(state, { type: 'KAPLAHHH', foo: 'bar' })
     expect(state).toEqual(initialState)
+  })
+
+  test('Add initial contract type', () => {
+    const mockArtifact = { contractName: 'ERC20', bytecode: 'xyz' }
+    const mockId = uuidv5(mockArtifact.bytecode, NAMESPACE)
+
+    addInitialContractType(state, mockArtifact)
+
+    expect(state).toEqual({
+      ...initialState,
+      types: {
+        [mockId]: {
+          id: mockId,
+          name: 'ERC20',
+          artifact: mockArtifact,
+        },
+      },
+    })
   })
 
   test(ACTIONS.CLEAR_ERRORS, () => {
@@ -60,6 +80,53 @@ describe('contracts reducer', () => {
         [id2]: { id: id2, contract: 'bar' },
       },
       isDeploying: false,
+    })
+  })
+
+  test(ACTIONS.ADD_CONTRACT_TYPE, () => {
+
+    const mockTypes = { 'abc': { id: 'abc' }, 'efg': { id: 'efg' } }
+    const mockArtifact = { contractName: 'ERC20', bytecode: 'xyz' }
+    const mockId = uuidv5(mockArtifact.bytecode, NAMESPACE)
+
+    state.types = { ...mockTypes }
+
+    const expectedState = {
+      ...state,
+      types: {
+        ...state.types,
+        [mockId]: {
+          id: mockId,
+          name: 'ERC20',
+          artifact: mockArtifact,
+        },
+      },
+    }
+
+    state = reducer(
+      state,
+      _test.actions.getAddContractTypeAction(mockArtifact)
+    )
+    expect(state).toEqual(expectedState)
+
+    // and again (should overwrite)
+    state = reducer(
+      state,
+      _test.actions.getAddContractTypeAction(mockArtifact)
+    )
+    expect(state).toEqual(expectedState)
+  })
+
+  test(ACTIONS.REMOVE_CONTRACT_TYPE, () => {
+
+    state.types = { 'abc': { id: 'abc' }, 'efg': { id: 'efg' } }
+    state = reducer(state, _test.actions.getRemoveContractTypeAction('abc'))
+
+    expect(state).toEqual({
+      ...initialState,
+      types: {
+        'efg': { id: 'efg' },
+      },
     })
   })
 })

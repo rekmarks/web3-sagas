@@ -7,7 +7,6 @@ import uuidv4 from 'uuid/v4'
 import uuidv5 from 'uuid/v5'
 
 import {
-  contracts as defaultContracts, // all default contracts come from chain-end
   deploy as _deploy,
   // v2.0
   // getInstance,
@@ -23,21 +22,20 @@ import selectors from '../selectors'
 // contract type uuids are created using the contract bytecode (see call below)
 // think of the resulting uuid as a hash of the contract artifact to help
 // prevent the addition of duplicate contracts
+// e.g.     const id = uuidv5(c.bytecode, NAMESPACE)
 import { NAMESPACE } from '../utils'
 
 // import { getDisplayAddress } from '../utils' // eth address truncation
 
 const initialState = {
 
-  types: Object.values(defaultContracts).reduce((acc, c) => {
-    const id = uuidv5(c.bytecode, NAMESPACE)
-    acc[id] = {
-      id: id,
-      name: c.contractName,
-      artifact: c, // Truffle compilation output
-    }
-    return acc
-  }, {}),
+  types: {
+    // id: {
+    //   id,
+    //   name, (artifact.contractName)
+    //   artifact,
+    // }
+  },
 
   // error storage
   errors: [],
@@ -79,6 +77,8 @@ const _test = {
     getBeginDeploymentAction,
     getDeploymentFailureAction,
     getDeploymentSuccessAction,
+    getAddContractTypeAction,
+    getRemoveContractTypeAction,
   },
   sagas: {
     deploySaga,
@@ -93,10 +93,39 @@ const _test = {
 export {
   getBeginDeploymentAction as deployContract,
   getClearErrorsAction as clearErrors,
+  getAddContractTypeAction as addContractType,
+  getRemoveContractTypeAction as removeContractType,
   initialState,
+  addInitialContractType,
   sagas,
   _test,
 }
+
+/**
+ * External Helpers
+ */
+
+/**
+ * Adds the given artifact to initialState as a contract type.
+ * WARNING: Only use this to add contracts to the initial state of the
+ * contracts reducer. Use the reducer after initialization.
+ * @param {object} initialState the initial state of the contracts reducer
+ * @param {object} artifact a compiled Solidity artifact
+ */
+function addInitialContractType (initialState, artifact) {
+
+  const id = uuidv5(artifact.bytecode, NAMESPACE)
+
+  initialState.types[id] = {
+    id,
+    name: artifact.contractName,
+    artifact,
+  }
+}
+
+/**
+ * Reducer
+ */
 
 export function reducer (state = initialState, action) {
 
@@ -112,6 +141,35 @@ export function reducer (state = initialState, action) {
       return {
         ...state,
         isDeploying: false,
+      }
+
+    case ACTIONS.ADD_CONTRACT_TYPE:
+
+      return {
+
+        ...state,
+        types: {
+
+          ...state.types,
+
+          [action.id]: {
+            id: action.id,
+            name: action.artifact.contractName,
+            artifact: action.artifact,
+          },
+        },
+      }
+
+    case ACTIONS.REMOVE_CONTRACT_TYPE:
+
+      const types = Object.values(state.types).reduce((acc, t) => {
+        if (t.id !== action.id) acc[t.id] = t
+        return acc
+      }, {})
+
+      return {
+        ...state,
+        types,
       }
 
     case ACTIONS.DEPLOYMENT_SUCCESS:
@@ -152,6 +210,33 @@ export function reducer (state = initialState, action) {
 /**
  * Synchronous action creators
  */
+
+/**
+ * Adds the contract artifact to state.
+ * NOTE: Overwrites anything with the same id (i.e. if adding
+ * artifacts with identical bytecode).
+ * @param {object} artifact the compiled contract artifact
+ */
+function getAddContractTypeAction (artifact) {
+  return {
+    type: ACTIONS.ADD_CONTRACT_TYPE,
+    id: uuidv5(artifact.bytecode, NAMESPACE),
+    artifact,
+  }
+}
+
+/**
+ * Removes contract type from state.
+ * WARNING: Any functionality relying on the existence of this contract type
+ * will stop working.
+ * @param {string} id id of contract type to remove
+ */
+function getRemoveContractTypeAction (id) {
+  return {
+    type: ACTIONS.REMOVE_CONTRACT_TYPE,
+    id,
+  }
+}
 
 /**
  * Initializes contract deployment.

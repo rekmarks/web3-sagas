@@ -11,11 +11,9 @@ import {
   sagas as web3Sagas,
 } from './reducers/web3'
 
-import { NAMESPACE, getDisplayAddress } from './utils'
-
 export const initialState = {
-  contracts: {...contractsState},
-  web3: {...web3State},
+  contracts: { ...contractsState },
+  web3: { ...web3State },
 }
 
 export const reducers = {
@@ -28,7 +26,5 @@ export const sagas = [
   ...contractsSagas,
 ]
 
-export const utils = {
-  NAMESPACE,
-  getDisplayAddress,
-}
+export { NAMESPACE, getDisplayAddress } from './utils'
+export { addInitialContractType } from './reducers/contracts'
