@@ -374,8 +374,8 @@ async function deployContract (
     // convert object of params with data to array of param values
     arrayParams = Object.keys(constructorParams)
       .sort((a, b) => {
-        return constructorParams[a].paramOrder -
-               constructorParams[b].paramOrder
+        return constructorParams[a].order -
+               constructorParams[b].order
       })
       .map(key => constructorParams[key].value)
   } else {
