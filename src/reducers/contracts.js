@@ -351,7 +351,8 @@ function prepareForDeployment (web3) {
  * @param {object} web3 redux web3 substate
  * @param {object} contractTypes contract types from state
  * @param {string} contractId name of contract to deploy
- * @param {array} constructorParams constructor parameters
+ * @param {array} constructorParams constructor parameters as array of
+ * { order, value } objects
  * @return {object} deployment data if successful, throws otherwise
  */
 async function deployContract (
@@ -366,21 +367,13 @@ async function deployContract (
     throw new Error('No contract with id "' + contractId + '" found.')
   }
 
-  // TODO: actually expect only arrays for this argument
-  // and move this conversion higher up the call chain
-  // (do form an object as below in the React component)
-  let arrayParams = []
-  if (!Array.isArray(constructorParams)) {
-    // convert object of params with data to array of param values
-    arrayParams = Object.keys(constructorParams)
-      .sort((a, b) => {
-        return constructorParams[a].order -
-               constructorParams[b].order
-      })
-      .map(key => constructorParams[key].value)
-  } else {
-    arrayParams = constructorParams
-  }
+  // convert object of params with data to array of param values
+  const finalParams = constructorParams
+    .sort((a, b) => {
+      return constructorParams[a].order -
+              constructorParams[b].order
+    })
+    .map(key => constructorParams[key].value)
 
   const artifact = contractTypes[contractId].artifact
 
@@ -388,7 +381,7 @@ async function deployContract (
   // this may throw and that's fine
   const instance = await _deploy(
     artifact,
-    arrayParams,
+    finalParams,
     web3.provider,
     web3.account
   )
