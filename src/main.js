@@ -17,6 +17,8 @@ import {
   clearErrors as clearWeb3Errors,
 } from './reducers/web3'
 
+import { contracts as contractsActions, web3 as web3Actions } from './actions'
+
 export const initialState = {
   contracts: { ...contractsState },
   web3: { ...web3State },
@@ -32,7 +34,7 @@ export const sagas = [
   ...contractsSagas,
 ]
 
-export const actions = {
+export const actionCreators = {
   contracts: {
     deploy: deployContract,
     clearErrors: clearContractsErrors,
@@ -43,6 +45,11 @@ export const actions = {
     getWeb3: getWeb3,
     clearErrors: clearWeb3Errors,
   },
+}
+
+export const actionNames = {
+  contracts: contractsActions,
+  web3: web3Actions,
 }
 
 export { NAMESPACE, getDisplayAddress } from './utils'
