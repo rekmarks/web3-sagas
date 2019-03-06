@@ -367,21 +367,14 @@ async function deployContract (
     throw new Error('No contract with id "' + contractId + '" found.')
   }
 
-  // convert object of params with data to array of param values
-  const finalParams = constructorParams
-    .sort((a, b) => {
-      return constructorParams[a].order -
-              constructorParams[b].order
-    })
-    .map(key => constructorParams[key].value)
-
-  const artifact = contractTypes[contractId].artifact
-
   // actual web3 call happens in here
   // this may throw and that's fine
   const instance = await _deploy(
-    artifact,
-    finalParams,
+    contractTypes[contractId].artifact,
+    // create sorted array of param values
+    constructorParams
+      .sort((a, b) => a.order - b.order)
+      .map(param => param.value),
     web3.provider,
     web3.account
   )
@@ -391,7 +384,7 @@ async function deployContract (
     instance: instance,
     address: instance.address,
     account: web3.account,
-    type: artifact.contractName,
+    type: contractTypes[contractId].name,
     constructorParams: constructorParams,
     networkId: web3.networkId,
   }
