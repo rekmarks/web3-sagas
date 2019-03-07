@@ -25,8 +25,6 @@ import selectors from '../selectors'
 // e.g.     const id = uuidv5(c.bytecode, NAMESPACE)
 import { NAMESPACE } from '../utils'
 
-// import { getDisplayAddress } from '../utils' // eth address truncation
-
 const initialState = {
 
   types: {

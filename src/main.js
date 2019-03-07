@@ -52,5 +52,5 @@ export const actionNames = {
   web3: web3Actions,
 }
 
-export { NAMESPACE, getDisplayAddress } from './utils'
+export { NAMESPACE } from './utils'
 export { addInitialContractType } from './reducers/contracts'
