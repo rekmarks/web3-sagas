@@ -304,7 +304,8 @@ function * deploySaga (action) {
     try {
       const result = yield call(
         deployContract,
-        web3,
+        web3.account,
+        web3.networkId,
         contracts.types,
         action.contractId,
         action.constructorParams
@@ -332,8 +333,8 @@ function prepareForDeployment (web3) {
   if (!web3.ready) {
     throw new Error('Reducer "web3" not ready.')
   }
-  if (!web3.provider) {
-    throw new Error('Missing web3 provider.')
+  if (!web3.networkId) {
+    throw new Error('Missing web3 networkId.')
   }
   if (!web3.account) {
     throw new Error('Missing web3 account.')
@@ -354,7 +355,8 @@ function prepareForDeployment (web3) {
  * @return {object} deployment data if successful, throws otherwise
  */
 async function deployContract (
-    web3,
+    account,
+    networkId,
     contractTypes,
     contractId,
     constructorParams,
@@ -373,17 +375,17 @@ async function deployContract (
     constructorParams
       .sort((a, b) => a.order - b.order)
       .map(param => param.value),
-    web3.provider,
-    web3.account
+    window.ethereum,
+    account
   )
 
   // success, return deployment data
   return {
     instance: instance,
     address: instance.address,
-    account: web3.account,
+    account: account,
     type: contractTypes[contractId].name,
     constructorParams: constructorParams,
-    networkId: web3.networkId,
+    networkId: networkId,
   }
 }

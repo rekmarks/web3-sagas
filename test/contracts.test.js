@@ -149,7 +149,7 @@ describe('contracts sagas', () => {
     const state = cloneState()
     state.web3 = {
       ready: true,
-      provider: true,
+      networkId: true,
       account: true,
     }
 

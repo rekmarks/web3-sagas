@@ -59,7 +59,7 @@ export default function * rootSaga () {
 import { compose, createStore, applyMiddleware } from 'redux'
 import createSagaMiddleWare from 'redux-saga'
 import { all } from 'redux-saga/effects'
-import { addInitialContractType } from 'web3-sagas'
+import { addInitialContractType, addListeners } from 'web3-sagas'
 
 import { reducer, initialState } from './rootReducer'
 import rootSaga from './rootSaga'
@@ -86,10 +86,28 @@ export default function configureStore () {
   return {
     ...createStore(reducer, initialState, enhancer),
     runSaga: () => sagaMiddleware.run(rootSaga),
+    addListeners: () => addListeners(this.dispatch),
   }
 }
 ```
 
+### `index.js`
+```js
+
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
+// your other package imports...
+import configureStore from '/redux/configureStore'
+
+const store = configureStore()
+store.runSaga() // run the root saga
+store.addListeners() // monitor window.ethereum and dispatch actions
+
+ReactDOM.render(
+  <Provider store={store}>
+    // ...
+```
 ### Actions
 
 Import the following properties to dispatch actions or define your own Sagas:

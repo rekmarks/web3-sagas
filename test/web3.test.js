@@ -5,7 +5,9 @@ import { put } from 'redux-saga/effects'
 import { cloneableGenerator } from '@redux-saga/testing-utils'
 
 import { web3 as ACTIONS } from '../src/actions'
-import { reducer, initialState, _test } from '../src/reducers/web3'
+import { reducer, initialState, addListeners, _test } from '../src/reducers/web3'
+
+import EventEmitter from 'events'
 
 describe('web3 reducer', () => {
 
@@ -40,7 +42,6 @@ describe('web3 reducer', () => {
 
   test(ACTIONS.GET_WEB3_SUCCESS, () => {
     const expected = {
-      provider: 'provider',
       account: 'account',
       networkId: 'networkId',
     }
@@ -95,10 +96,45 @@ describe('web3 sagas', () => {
   test('Succeeds if all is well', () => {
     expect(gen.next().value).toEqual(
       put(_test.actions.getWeb3SuccessAction(
-        window.ethereum,
         window.ethereum.selectedAddress,
         window.ethereum.networkVersion
       ))
     )
   })
 })
+
+describe('web3 listeners', () => {
+
+  beforeEach(() => {
+    window.ethereum = new MockProvider()
+  })
+
+  test('Handles accountsChanged', () => {
+    let result = null
+    addListeners(action => { result = action })
+    window.ethereum.changeAccounts()
+    expect(result).toEqual(_test.actions.getWeb3Action())
+  })
+
+  test('Handles networkChanged', () => {
+    let result = null
+    addListeners(action => { result = action })
+    window.ethereum.changeNetwork()
+    expect(result).toEqual(_test.actions.getWeb3Action())
+  })
+})
+
+class MockProvider extends EventEmitter {
+
+  isMetaMask = true
+  selectedAddress = 'bar'
+  networkVersion = 9000
+
+  changeAccounts = () => {
+    this.emit('accountsChanged', 'foo')
+  }
+
+  changeNetwork = () => {
+    this.emit('networkChanged', 9001)
+  }
+}
