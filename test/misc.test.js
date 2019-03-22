@@ -16,8 +16,8 @@ describe('namespace', () => {
 
 describe('index.min.js', () => {
 
-  it('all properties exported correctly', () => {
-    expect(sagas.length).toEqual(2)
+  it('properties exported correctly', () => {
+    expect(sagas.length).toEqual(3)
     expect(Object.keys(reducers).length).toEqual(2)
     expect(Object.keys(initialState).length).toEqual(2)
   })

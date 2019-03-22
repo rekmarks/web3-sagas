@@ -1,13 +1,22 @@
 
 /* eslint-env jest */
 
+import { expectSaga } from 'redux-saga-test-plan'
+import * as matchers from 'redux-saga-test-plan/matchers'
 import { put } from 'redux-saga/effects'
 import { cloneableGenerator } from '@redux-saga/testing-utils'
+import EventEmitter from 'events'
 
 import { web3 as ACTIONS } from '../src/actions'
 import { reducer, initialState, addListeners, _test } from '../src/reducers/web3'
+import selectors from '../src/selectors'
 
-import EventEmitter from 'events'
+
+const cloneState = () => {
+  return {
+    web3: { ...initialState },
+  }
+}
 
 describe('web3 reducer', () => {
 
@@ -28,18 +37,6 @@ describe('web3 reducer', () => {
     expect(state).toEqual(initialState)
   })
 
-  test(ACTIONS.CLEAR_ERRORS, () => {
-    state.errors = [ new Error('blaha') ]
-    state = reducer(state, _test.actions.getClearErrorsAction())
-    expect(state).toMatchObject({ errors: [] })
-  })
-
-  test(ACTIONS.GET_WEB3_FAILURE, () => {
-    const error = 'sune'
-    state = reducer(state, _test.actions.getWeb3FailureAction(error))
-    expect(state).toMatchObject({ errors: [error] })
-  })
-
   test(ACTIONS.GET_WEB3_SUCCESS, () => {
     const expected = {
       account: 'account',
@@ -49,16 +46,41 @@ describe('web3 reducer', () => {
     expected.ready = true
     expect(state).toMatchObject(expected)
   })
+
+  test(ACTIONS.GET_WEB3_FAILURE, () => {
+    const error = 'sune'
+    state = reducer(state, _test.actions.getWeb3FailureAction(error))
+    expect(state).toMatchObject({ errors: [error] })
+  })
+
+  test(ACTIONS.WATCH_ASSET, () => {
+    state = reducer(state, _test.actions.getWatchAssetAction())
+    expect(state).toEqual(initialState)
+  })
+
+  test(ACTIONS.WATCH_ASSET_SUCCESS, () => {
+    state = reducer(state, _test.actions.getWatchAssetSuccessAction())
+    expect(state).toEqual(initialState)
+  })
+
+  test(ACTIONS.WATCH_ASSET_FAILURE, () => {
+    const error = 'sune'
+    state = reducer(state, _test.actions.getWatchAssetFailureAction(error))
+    expect(state).toMatchObject({ errors: [error] })
+  })
+
+  test(ACTIONS.CLEAR_ERRORS, () => {
+    state.errors = [ new Error('blaha') ]
+    state = reducer(state, _test.actions.getClearErrorsAction())
+    expect(state).toMatchObject({ errors: [] })
+  })
+
 })
 
-describe('web3 sagas', () => {
+describe('getWeb3 sagas', () => {
 
   beforeEach(() => {
-    window.ethereum = {
-      isMetaMask: true,
-      selectedAddress: 'bar',
-      networkVersion: 9000,
-    }
+    window.ethereum = new MockProvider()
   })
 
   const gen = cloneableGenerator(_test.sagas.getWeb3Saga)()
@@ -103,6 +125,68 @@ describe('web3 sagas', () => {
   })
 })
 
+describe('watchAsset sagas', () => {
+
+  let state
+  const tokenAddress = '0xabc'
+  const watchAssetAction = _test.actions.getWatchAssetAction(tokenAddress)
+
+  beforeEach(() => {
+    window.ethereum = new MockProvider()
+    state = cloneState()
+  })
+
+  test('Fails if web3 reducer not ready', () => {
+
+    state.web3.ready = false
+
+    return expectSaga(_test.sagas.watchAssetSaga, watchAssetAction)
+      .withState(state)
+      .select(selectors.web3)
+      .put(
+        _test.actions.getWatchAssetFailureAction(
+          new Error('Web3 reducer not ready.')
+        )
+      )
+      .run()
+  })
+
+  test('Handles success', () => {
+
+    state.web3.ready = true
+
+    return expectSaga(_test.sagas.watchAssetSaga, watchAssetAction)
+      .withState(state)
+      .select(selectors.web3)
+      .provide([
+        [matchers.call.fn(window.ethereum.sendAsync), { added: true }],
+      ])
+      .put(
+        _test.actions.getWatchAssetSuccessAction(tokenAddress)
+      )
+      .run()
+  })
+
+  test('Handles failure', () => {
+
+    state.web3.ready = true
+
+    return expectSaga(_test.sagas.watchAssetSaga, watchAssetAction)
+      .withState(state)
+      .select(selectors.web3)
+      .provide([
+        [
+          matchers.call.fn(window.ethereum.sendAsync),
+          { added: false, error: new Error('sune') },
+        ],
+      ])
+      .put(
+        _test.actions.getWatchAssetFailureAction(new Error('sune'))
+      )
+      .run()
+  })
+})
+
 describe('web3 listeners', () => {
 
   beforeEach(() => {
@@ -137,4 +221,6 @@ class MockProvider extends EventEmitter {
   changeNetwork = () => {
     this.emit('networkChanged', 9001)
   }
+
+  sendAsync = () => true
 }

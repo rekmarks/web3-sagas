@@ -1,11 +1,12 @@
 
 // package imports
 
-import { put, takeLatest } from 'redux-saga/effects'
+import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 
 // local imports
 
 import { web3 as ACTIONS } from '../actions'
+import selectors from '../selectors'
 
 const initialState = {
   account: null, // current selected account from injected web3 object
@@ -16,6 +17,7 @@ const initialState = {
 
 const sagas = [
   takeLatest(ACTIONS.GET_WEB3, getWeb3Saga),
+  takeEvery(ACTIONS.WATCH_ASSET, watchAssetSaga),
 ]
 
 const _test = {
@@ -23,11 +25,16 @@ const _test = {
     getWeb3Action,
     getWeb3FailureAction,
     getWeb3SuccessAction,
+    getWatchAssetAction,
+    getWatchAssetSuccessAction,
+    getWatchAssetFailureAction,
     getClearErrorsAction,
   },
   sagas: {
-    getWeb3Saga,
     watchGetWeb3,
+    watchWatchAsset,
+    getWeb3Saga,
+    watchAssetSaga,
   },
 }
 
@@ -38,6 +45,7 @@ export {
   addListeners,
   // actions
   getWeb3Action as getWeb3,
+  getWatchAssetAction as watchAsset,
   getClearErrorsAction as clearErrors,
   _test,
 }
@@ -60,6 +68,18 @@ function reducer (state = initialState, action) {
       }
 
     case ACTIONS.GET_WEB3_FAILURE:
+      return {
+        ...state,
+        errors: state.errors.concat(action.error),
+      }
+
+    case ACTIONS.WATCH_ASSET:
+      return state
+
+    case ACTIONS.WATCH_ASSET_SUCCESS:
+      return state
+
+    case ACTIONS.WATCH_ASSET_FAILURE:
       return {
         ...state,
         errors: state.errors.concat(action.error),
@@ -123,6 +143,39 @@ function getClearErrorsAction () {
 }
 
 /**
+ * Makes wallet_watchAsset call.
+ * @param {string} tokenAddress the address of the token to add
+ */
+function getWatchAssetAction (tokenAddress) {
+  return {
+    type: ACTIONS.WATCH_ASSET,
+    tokenAddress,
+  }
+}
+
+/**
+ * On watchAsset success, can be used to notify user.
+ * @param {string} tokenAddress the address of the added token
+ */
+function getWatchAssetSuccessAction (tokenAddress) {
+  return {
+    type: ACTIONS.WATCH_ASSET_SUCCESS,
+    tokenAddress,
+  }
+}
+
+/**
+ * On watchAsset failure, adds error to state.
+ * @param {error} error
+ */
+function getWatchAssetFailureAction (error) {
+  return {
+    type: ACTIONS.WATCH_ASSET_FAILURE,
+    error,
+  }
+}
+
+/**
  * Sagas
  */
 
@@ -166,6 +219,48 @@ function * getWeb3Saga () {
       'Missing or invalid account or network id.', account)))
   } else {
     yield put(getWeb3SuccessAction(account, networkId))
+  }
+}
+
+/**
+ * watchAssetSaga watcher
+ */
+function * watchWatchAsset () {
+  yield takeEvery(ACTIONS.WATCH_ASSET, watchAssetSaga)
+}
+
+/**
+ * Attempts to add the ERC20 token with the address given by the action.
+ * @param {object} action a WATCH_ASSET action
+ */
+function * watchAssetSaga (action) {
+
+  const web3 = yield select(selectors.web3)
+
+  if (!web3.ready) {
+    yield put(getWatchAssetFailureAction(
+      new Error('Web3 reducer not ready.')
+    ))
+  } else {
+
+    const result = yield call(
+      window.ethereum.sendAsync,
+      {
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20',
+          options: {
+            address: action.tokenAddress,
+          },
+        },
+      }
+    )
+
+    if (result.added) {
+      yield put(getWatchAssetSuccessAction(action.tokenAddress))
+    } else {
+      yield put(getWatchAssetFailureAction(result.error))
+    }
   }
 }
 

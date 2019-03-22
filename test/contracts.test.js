@@ -14,6 +14,13 @@ import { NAMESPACE, addInitialContractType } from '../index'
 
 // TODO: finish testing all saga branches
 
+const cloneState = () => {
+  return {
+    contracts: { ...initialState },
+    web3: { ...web3InitialState },
+  }
+}
+
 describe('contracts reducer', () => {
 
   let state
@@ -136,13 +143,6 @@ describe('contracts sagas', () => {
   const beginDeploymentAction = _test.actions.getBeginDeploymentAction(
     1, [1, 2, 3]
   )
-
-  const cloneState = () => {
-    return {
-      contracts: { ...initialState },
-      web3: { ...web3InitialState },
-    }
-  }
 
   test('completes with valid args and state', () => {
 

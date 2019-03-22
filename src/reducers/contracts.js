@@ -1,7 +1,7 @@
 
 // package imports
 
-import { put, takeLeading, call, select } from 'redux-saga/effects'
+import { call, put, select, takeLeading } from 'redux-saga/effects'
 
 import uuidv4 from 'uuid/v4'
 import uuidv5 from 'uuid/v5'
@@ -16,7 +16,6 @@ import {
 // local imports
 
 import { contracts as ACTIONS } from '../actions'
-
 import selectors from '../selectors'
 
 // contract type uuids are created using the contract bytecode

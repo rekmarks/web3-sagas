@@ -55,3 +55,4 @@ export const actionNames = {
 export { NAMESPACE } from './utils'
 export { addInitialContractType } from './reducers/contracts'
 export { addListeners } from './reducers/web3'
+export { selectors } from './selectors'
