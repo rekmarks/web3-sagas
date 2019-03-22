@@ -54,7 +54,7 @@ describe('web3 reducer', () => {
   })
 
   test(ACTIONS.WATCH_ASSET, () => {
-    state = reducer(state, _test.actions.getWatchAssetAction())
+    state = reducer(state, _test.actions.getWatchAssetAction('a', 'b', 'c'))
     expect(state).toEqual(initialState)
   })
 
@@ -128,8 +128,11 @@ describe('getWeb3 sagas', () => {
 describe('watchAsset sagas', () => {
 
   let state
-  const tokenAddress = '0xabc'
-  const watchAssetAction = _test.actions.getWatchAssetAction(tokenAddress)
+  const address = '0xabc'
+  const tokenSymbol = 'XYZ'
+  const watchAssetAction = _test.actions.getWatchAssetAction(
+    address, tokenSymbol, 2
+  )
 
   beforeEach(() => {
     window.ethereum = new MockProvider()
@@ -158,11 +161,8 @@ describe('watchAsset sagas', () => {
     return expectSaga(_test.sagas.watchAssetSaga, watchAssetAction)
       .withState(state)
       .select(selectors.web3)
-      .provide([
-        [matchers.call.fn(window.ethereum.sendAsync), { added: true }],
-      ])
       .put(
-        _test.actions.getWatchAssetSuccessAction(tokenAddress)
+        _test.actions.getWatchAssetSuccessAction(address, tokenSymbol)
       )
       .run()
   })
@@ -171,15 +171,12 @@ describe('watchAsset sagas', () => {
 
     state.web3.ready = true
 
-    return expectSaga(_test.sagas.watchAssetSaga, watchAssetAction)
+    return expectSaga(
+      _test.sagas.watchAssetSaga,
+      { ...watchAssetAction, address: false }
+    )
       .withState(state)
       .select(selectors.web3)
-      .provide([
-        [
-          matchers.call.fn(window.ethereum.sendAsync),
-          { added: false, error: new Error('sune') },
-        ],
-      ])
       .put(
         _test.actions.getWatchAssetFailureAction(new Error('sune'))
       )
@@ -222,5 +219,8 @@ class MockProvider extends EventEmitter {
     this.emit('networkChanged', 9001)
   }
 
-  sendAsync = () => true
+  sendAsync = (arg, callback) => {
+    if (arg.params.options.address) callback(false, true)
+    else callback(new Error('sune'))
+  }
 }

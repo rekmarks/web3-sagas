@@ -109,11 +109,28 @@ ReactDOM.render(
   <Provider store={store}>
     // ...
 ```
-### Actions
+## Actions
 
 Import the following properties to dispatch actions or define your own Sagas:
 - `actionCreators`
 - `actionNames`
+
+Important actions and their usage are described below.
+
+### web3
+#### `getWeb3()`
+Initializes the web3 reducer state, which must be done before any further web3
+calls can be made.
+
+#### `watchAsset(address, symbol, decimals)`
+Attempts to add a token to the user's wallet.
+
+### contracts
+#### `deploy(contractId, constructorParams)`
+Attempts to deploy the contract with the given `contractId`. `constructorParams`
+must be an array with the parameters in the order defined in the declaration
+of the contract's constructor in Solidity. If you compile using Truffle (and
+presumably through other methods), this order is preserved in the ABI.
 
 ### Miscellaneous
 

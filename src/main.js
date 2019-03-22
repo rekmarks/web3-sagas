@@ -14,6 +14,7 @@ import {
   reducer as web3,
   sagas as web3Sagas,
   getWeb3,
+  watchAsset,
   clearErrors as clearWeb3Errors,
 } from './reducers/web3'
 
@@ -37,12 +38,13 @@ export const sagas = [
 export const actionCreators = {
   contracts: {
     deploy: deployContract,
-    clearErrors: clearContractsErrors,
     addContractType: addContractType,
     removeContractType: removeContractType,
+    clearErrors: clearContractsErrors,
   },
   web3: {
-    getWeb3: getWeb3,
+    getWeb3,
+    watchAsset,
     clearErrors: clearWeb3Errors,
   },
 }

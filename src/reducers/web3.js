@@ -1,12 +1,13 @@
 
 // package imports
 
-import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
+import { put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 
 // local imports
 
 import { web3 as ACTIONS } from '../actions'
 import selectors from '../selectors'
+import { createPromise } from '../utils'
 
 const initialState = {
   account: null, // current selected account from injected web3 object
@@ -144,23 +145,28 @@ function getClearErrorsAction () {
 
 /**
  * Makes wallet_watchAsset call.
- * @param {string} tokenAddress the address of the token to add
+ * @param {string} address the token contract address
+ * @param {string} symbol the token's symbol
+ * @param {number} address the token's decimals
  */
-function getWatchAssetAction (tokenAddress) {
+function getWatchAssetAction (address, symbol, decimals) {
   return {
     type: ACTIONS.WATCH_ASSET,
-    tokenAddress,
+    address,
+    symbol,
+    decimals,
   }
 }
 
 /**
  * On watchAsset success, can be used to notify user.
- * @param {string} tokenAddress the address of the added token
+ * @param {string} address the address of the added token
  */
-function getWatchAssetSuccessAction (tokenAddress) {
+function getWatchAssetSuccessAction (address, symbol) {
   return {
     type: ACTIONS.WATCH_ASSET_SUCCESS,
-    tokenAddress,
+    address,
+    symbol,
   }
 }
 
@@ -243,23 +249,30 @@ function * watchAssetSaga (action) {
     ))
   } else {
 
-    const result = yield call(
+    // sendAsync uses callbacks, and we need to use promises because
+    // this is a generator (when EIP1193 is adopted, this will be simpler)
+    const promise = createPromise(
       window.ethereum.sendAsync,
       {
         method: 'wallet_watchAsset',
         params: {
           type: 'ERC20',
           options: {
-            address: action.tokenAddress,
+            address: action.address,
+            symbol: action.symbol,
+            decimals: action.decimals,
           },
         },
       }
     )
+    const resolved = yield promise
 
-    if (result.added) {
-      yield put(getWatchAssetSuccessAction(action.tokenAddress))
+    if (!resolved.error && !resolved.result.error) {
+      yield put(getWatchAssetSuccessAction(action.address, action.symbol))
     } else {
-      yield put(getWatchAssetFailureAction(result.error))
+      yield put(getWatchAssetFailureAction(
+        resolved.error || resolved.result.error
+      ))
     }
   }
 }
