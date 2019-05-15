@@ -295,6 +295,7 @@ function * watchAssetSaga (action) {
  * @param {object} actions custom actions to dispatch in addition to GET_WEB3
  */
 function addListeners (dispatch, actions = {}) {
+  if (!window.ethereum) throw 'window.ethereum not found; make sure you check that window.ethereum is injected before calling store.addListeners'
   window.ethereum.on('accountsChanged', () => {
     dispatch(getWeb3Action())
     if (actions.accountsChanged) dispatch(actions.accountsChanged)

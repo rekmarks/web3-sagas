@@ -103,10 +103,15 @@ import configureStore from '/redux/configureStore'
 
 const store = configureStore()
 store.runSaga() // run the root saga
-store.addListeners(store.dispatch) // monitor window.ethereum and dispatch actions
+
+// after you've confirmed that window.ethereum is injected,
+// call this in your main App component to monitor window.ethereum
+// and dispatch actions in response to network and account changes
+const addWeb3Listeners = () => store.addListeners(store.dispatch)
 
 ReactDOM.render(
   <Provider store={store}>
+    <App addWeb3Listeners={addWeb3Listeners} />
     // ...
 ```
 ## Actions
